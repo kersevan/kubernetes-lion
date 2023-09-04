@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    force-restart: "true" 
+    io.kompose.service: frontend
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: frontend
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.24.0 (4a2a0458)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/app-network: "true"
+        io.kompose.service: frontend
+    spec:
+      containers:
+        - image: frontend
+          name: frontend
+          ports:
+            - containerPort: 30001
+          resources: {}
+          imagePullPolicy: Never
+      restartPolicy: Always
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    force-restart: "true" 
+    io.kompose.service: frontend
+  name: frontend
+spec:
+  type: NodePort
+  ports:
+    - name: "30001"
+      port: 30001
+      targetPort: 30001
+      nodePort: 31001
+  selector:
+    io.kompose.service: frontend
+status:
+  loadBalancer: {}

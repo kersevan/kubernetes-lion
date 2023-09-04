@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # annotations:
+  #   kompose.cmd: kompose convert
+  #   kompose.version: 1.24.0 (4a2a0458)
+  # creationTimestamp: null
+  # labels:
+  #   io.kompose.service: pgadmin
+  name: pgadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      # annotations:
+      #   kompose.cmd: kompose convert
+      #   kompose.version: 1.24.0 (4a2a0458)
+      # creationTimestamp: null
+      labels:
+        io.kompose.network/app-network: "true"
+        app: pgadmin
+    spec:
+      containers:
+        - env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: admin@example.com
+            - name: PGADMIN_DEFAULT_PASSWORD
+              value: admin
+          image: dpage/pgadmin4
+          name: pgadmin
+          ports:
+            - containerPort: 80
+          resources: {}
+      # restartPolicy: Always
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  # annotations:
+  #   kompose.cmd: kompose convert
+  #   kompose.version: 1.24.0 (4a2a0458)
+  # creationTimestamp: null
+  labels:
+    app: pgadmin
+  name: pgadmin
+spec:
+  type: NodePort
+  ports:
+    - name: "30003"
+      port: 80
+      # targetPort: 80
+      nodePort: 31003
+  selector:
+    app: pgadmin
+# status:
+#   loadBalancer: {}

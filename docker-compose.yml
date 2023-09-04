@@ -1,0 +1,62 @@
+version: '3'
+services:
+  frontend:
+    ports:
+      # - "10001:10001"
+      - "30001:30001"
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    networks:
+      - app-network
+    links: 
+      - backend:backend
+      # - frontend:frontend
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      # - "10002:10002"
+      - "30002:30002"
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://dbuser:dbpassword@database/dbname
+    depends_on:
+      - database
+    networks:
+      - app-network
+    links:
+      - database:database
+
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      POSTGRES_DB: dbname
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      # - "10003:80"
+      - "30003:80"
+    networks:
+      - app-network
+    depends_on:
+      - database
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  database:

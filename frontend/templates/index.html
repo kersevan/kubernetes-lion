@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask Docker</title>
+</head>
+<body>
+    <a href="/getDb">Get everything from database</a>
+    <br>
+    <a href="/randomJoke">Get a randome Joke</a>
+    <br>
+    Or geta specific joke from the database by joke ID:
+    <form method="POST">
+		<input name="jokeId" value= {{jokeId}}>
+		<input type="submit">
+    </form>
+</body>
+</html>
